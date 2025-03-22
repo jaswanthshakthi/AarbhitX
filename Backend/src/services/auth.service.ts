@@ -19,7 +19,7 @@ export const register = async (email: string, password: string, username: string
     return newUser;
 };
 
-// ✅ User Login
+//  User Login
 export const loginUser = async (email: string, password: string) => {
     try {
         if (!email || !password) throw new Error("Email and password are required");
@@ -39,7 +39,7 @@ export const loginUser = async (email: string, password: string) => {
     }
 };
 
-// ✅ Get User Profile
+//  Get User Profile
 export const getUserProfile = async (userId: string) => {
     try {
         const user = await User.findById(userId);
@@ -51,7 +51,7 @@ export const getUserProfile = async (userId: string) => {
     }
 };
 
-// ✅ Update User Profile
+//  Update User Profile
 export const updateUserProfile = async (userId: string, updateData: any) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
