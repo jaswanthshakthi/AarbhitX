@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-const SECRET_KEY = process.env.JWT_SECRET || "secret"; // ✅ Store it once
+const SECRET_KEY = process.env.JWT_SECRET || "secret"; //  Store it once
 
 const transporter = nodemailer.createTransport({
     service: "gmail", // Use your email provider
@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS, // App password or email password
     },
 });
-// ✅ User Registration
+//  User Registration
 export const register = async (email: string, password: string, username: string) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({ email, password: hashedPassword, username });

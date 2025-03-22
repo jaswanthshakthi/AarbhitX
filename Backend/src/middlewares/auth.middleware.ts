@@ -16,7 +16,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         res.status(401).json({ message: "Unauthorized: No token provided" });
-        return; // ✅ Ensure we explicitly return after sending response
+        return; 
     }
 
     const token = authHeader.split(" ")[1];
@@ -26,15 +26,15 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 
         if (!decoded.id) {
             res.status(403).json({ message: "Forbidden: Invalid token payload" });
-            return; // ✅ Ensure function exits after sending response
+            return; // Ensure function exits after sending response
         }
 
-        req.user = { id: decoded.id }; // ✅ Correctly attach user ID to request
+        req.user = { id: decoded.id }; //  Correctly attach user ID to request
 
-        next(); // ✅ Proceed to the next middleware
+        next(); //  Proceed to the next middleware
     } catch (error) {
         res.status(403).json({ message: "Forbidden: Invalid token" });
-        return; // ✅ Ensure function exits
+        return; //  Ensure function exits
     }
 };
 
