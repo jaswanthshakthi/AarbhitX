@@ -20,11 +20,36 @@ const registerSchema = zod_1.z.object({
     email: zod_1.z.string().email("Invalid email format"),
     password: zod_1.z.string().min(6, "Password must be at least 6 characters long"),
 });
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     description: This endpoint allows a user to register with a username, email, and password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Validation error
+ */
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Validate request body against the schema
         const parsedData = registerSchema.parse(req.body);
-        const { email, username, password } = parsedData; // Use validated data
+        const { username, email, password } = parsedData; // Use validated data
         const newUser = yield (0, auth_controller_1.register)(username, email, password); // Corrected function call
         res.status(201).json({ message: "User registered successfully", user: newUser });
     }
@@ -37,6 +62,29 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
     }
 }));
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login a user
+ *     description: This endpoint allows a user to log in with their email and password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid credentials
+ */
 router.post("/login", auth_controller_1.login);
 /**
  * @swagger
@@ -129,4 +177,17 @@ router.post("/reset-password", validation_middleware_1.validatePasswordReset, au
  *         description: Invalid or expired token
  */
 router.put("/reset-password/:token", validation_middleware_1.validatePasswordReset, auth_controller_1.confirmResetPasswordHandler);
+/**
+ * @swagger
+ * /api/auth/welcome:
+ *   get:
+ *     summary: Welcome message
+ *     description: This endpoint returns a welcome message.
+ *     responses:
+ *       200:
+ *         description: Welcome message retrieved successfully
+ */
+router.get("/welcome", (req, res) => {
+    res.status(200).json({ message: "Welcome to the AarbhitX API!" });
+});
 exports.default = router;

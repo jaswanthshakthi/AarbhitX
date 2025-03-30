@@ -4,9 +4,8 @@ import {
     register as registerService,  // Renamed to avoid conflicts
     loginUser, 
     resetPassword, 
-    updateUserProfile as updateUserProfileService, 
-    confirmResetPassword, 
-    register
+    updateUserProfile as updateUserProfileService,
+    confirmResetPassword
 } from "../services/auth.service";
 
 declare module "express-serve-static-core" {
@@ -16,16 +15,15 @@ declare module "express-serve-static-core" {
 }
 
 // Register
-export const registerUser = async (req: Request, res: Response) => {  // Removed extra username parameter
+export const registerUser = async (req: Request, res: Response) => {
     try {
-        const { email, password, username } = req.body;
-        const user = await register(email, password, username);
+        const { username,email, password } = req.body;
+        const user = await registerService( username,email, password);
         res.status(201).json({ message: "User registered successfully", user });
     } catch (error: any) {  
         res.status(400).json({ error: error.message || "Something went wrong" });
     }
 };
-
 
 // Login
 export const login = async (req: Request, res: Response) => {
@@ -34,7 +32,7 @@ export const login = async (req: Request, res: Response) => {
         const token = await loginUser(email, password);
         res.status(200).json({ token });
     } catch (error: any) {  
-        res.status(401).json({ error: error.message || "Invalid credentials" });
+        res.status(401).json({ error: "Login failed: " + (error.message || "Invalid credentials") });
     }
 };
 
@@ -110,5 +108,5 @@ export const resetPasswordHandler = async (req: Request, res: Response) => {
         res.status(400).json({ error: error.message || "Something went wrong" });
     }
 };
-export { register };
 
+export { registerService as register, confirmResetPassword }; // Exporting the register function and confirmResetPassword

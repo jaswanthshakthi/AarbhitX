@@ -21,7 +21,7 @@ describe('Authentication Tests', () => {
             .post('/api/auth/register')
             .send({
             username: 'root',
-            email: 'boosaa123@gmail.com',
+            email: 'rootman@gmail.com',
             password: 'password123'
         });
         expect(response.status).toBe(201);
@@ -31,7 +31,7 @@ describe('Authentication Tests', () => {
         const response = yield (0, supertest_1.default)(app_1.default)
             .post('/api/auth/login')
             .send({
-            email: 'boosaa123@gmail.com',
+            email: 'rootman@gmail.com',
             password: 'password123'
         });
         expect(response.status).toBe(200);
@@ -41,7 +41,7 @@ describe('Authentication Tests', () => {
         const response = yield (0, supertest_1.default)(app_1.default)
             .post('/api/auth/forgot-password')
             .send({
-            email: 'boosaa123@gmail.com'
+            email: 'rootman@gmail.com'
         });
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('message', 'Password reset email sent successfully');
