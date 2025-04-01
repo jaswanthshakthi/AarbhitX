@@ -1,34 +1,45 @@
 import { Request, Response, NextFunction } from "express";
-import { body, validationResult } from "express-validator";
+import { z } from "zod";
 
-// Reusable validation error handler
-const handleValidationErrors = (req: Request, res: Response, next: NextFunction): void => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return;  // Ensure function exits after sending a response
+// Zod schema for registration validation
+const registrationSchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(3, { message: "Username must be at least 3 characters long" })
+    .nonempty({ message: "Username is required" }),
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Valid email is required" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" })
+    .regex(/\d/, { message: "Password must contain at least one number" })
+    .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" }),
+});
+
+// Reusable validation middleware
+export const validateRegistration = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    // Validate the request body
+    registrationSchema.parse(req.body);
+    next(); // Proceed only if validation passes
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      // Extract validation errors from Zod
+      const validationErrors = error.errors.map(err => ({
+        path: err.path,
+        message: err.message,
+      }));
+      res.status(400).json({ errors: validationErrors });
+    } else {
+      // Handle unexpected errors
+      res.status(500).json({ message: "Internal Server Error" });
     }
-    next();  // Call next only if there are no validation errors
+  }
 };
-
-// Registration validation middleware
-export const validateRegistration = [
-    body("username")
-        .trim()
-        .notEmpty().withMessage("Username is required")
-        .isLength({ min: 3 }).withMessage("Username must be at least 3 characters long")
-        .escape(),
-    
-    body("email")
-        .trim()
-        .isEmail().withMessage("Valid email is required")
-        .normalizeEmail(),
-    
-    body("password")
-        .isString()
-        .isLength({ min: 6 }).withMessage("Password must be at least 6 characters long")
-        .matches(/\d/).withMessage("Password must contain at least one number")
-        .matches(/[A-Z]/).withMessage("Password must contain at least one uppercase letter"),
-    
-    handleValidationErrors,
-];

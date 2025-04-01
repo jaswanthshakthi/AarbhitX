@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { z } from "zod"; // Import Zod for validation
+import { z } from "zod"; 
 import {
     register,
     login,
